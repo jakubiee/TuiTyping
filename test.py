@@ -76,7 +76,9 @@ def statistic_window(stdscr, wpm, max_y, max_x):
         key = stdscr.getkey()
         if key in ("\x0A"):
             main(stdscr)
-
+        elif key in ("\x1b"):
+            break
+        
 def test(stdscr, tempo):
     test_text = get_text(1000)
     test_text_string = ' '.join([str(element) for element in test_text])  
