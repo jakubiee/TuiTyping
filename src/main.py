@@ -21,7 +21,7 @@ def get_size_of_terminal():
     return y, x
 
 def get_text(number_of_words):
-    with open('english.json') as json_file:
+    with open('./src/languages/english.json') as json_file:
         words = json.load(json_file)['words']
         x = 1
         target_text = []
@@ -75,7 +75,7 @@ def statistic_window(stdscr, wpm, max_y, max_x):
     while True:
         key = stdscr.getkey()
         if key in ("\x0A"):
-            main(stdscr)
+            start(stdscr)
         elif key in ("\x1b"):
             break
         
@@ -122,15 +122,15 @@ def test(stdscr, tempo):
 
     statistic_window(stdscr, wpm, max_y, max_x)
 
-def main(stdscr):
+def start(stdscr):
     args = get_args()
     tempo = args.tempo
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.curs_set(0)
     stdscr.clear()
-    
     test(stdscr, tempo)
 
-if __name__ == "__main__":
-    wrapper(main)
+def main():
+    wrapper(start)
+    
