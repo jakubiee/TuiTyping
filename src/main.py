@@ -34,6 +34,9 @@ def get_ten_words_from_text(text, tens):
     listToStr = ' '.join([str(element) for element in text[10*(tens-1):10*tens]]) 
     return listToStr
 
+def footer(stdscr, max_y):
+    target = 'Esc - Exit'
+    stdscr.addstr(max_y-1, 0, target)
 
 def display(stdscr, target, line, max_y, max_x):
     middle_row = int(max_y / 2)
@@ -71,6 +74,7 @@ def statistic_window(stdscr, wpm, max_y, max_x):
     x_position = int((max_x / 2))
     stdscr.addstr(middle_row-4, x_position-int(7/2), f"WPM {str(wpm)}")
     stdscr.addstr(middle_row-2, x_position-int(23/2), "PRESS ENTER TO CONTINUE")
+    footer(stdscr, max_y)
     stdscr.nodelay(False)
     while True:
         key = stdscr.getkey()
@@ -101,6 +105,7 @@ def test(stdscr, tempo):
             n += 1
             display_test(stdscr, get_ten_words_from_text(test_text, 1+n), current_text, max_y, max_x)
         
+        footer(stdscr, max_y)
         display(stdscr, get_ten_words_from_text(test_text, 2+n), 0, max_y, max_x)
         display(stdscr, get_ten_words_from_text(test_text, 3+n), 1, max_y, max_x)
         countdown_timer(stdscr, time_elapsed, max_y, max_x)
