@@ -4,7 +4,7 @@ import random
 import json
 import time
 import argparse
-
+from src.colors import init_colors
 
 def get_args():
     parser = argparse.ArgumentParser(description="Terminal Type Tester.")
@@ -57,11 +57,11 @@ def display_test(stdscr, target, current, max_y, max_x):
             stdscr.clear()
             return True
         correct_char = target[i]
-        stdscr.addstr(middle_row, x_position+i, correct_char, curses.color_pair(1))
+        stdscr.addstr(middle_row, x_position+i, correct_char, curses.color_pair(2))
         if char != correct_char:
-            stdscr.addstr(middle_row, x_position+i, correct_char, curses.color_pair(2))
+            stdscr.addstr(middle_row, x_position+i, correct_char, curses.color_pair(3))
             if correct_char ==  " ":
-                stdscr.addstr(middle_row, x_position+i, char, curses.color_pair(2))
+                stdscr.addstr(middle_row, x_position+i, char, curses.color_pair(3))
         
 def countdown_timer(stdscr, time_elapsed, max_y, max_x):
     middle_row = int(max_y / 2) - 5
@@ -128,10 +128,9 @@ def test(stdscr, tempo):
     statistic_window(stdscr, wpm, max_y, max_x)
 
 def start(stdscr):
+    init_colors()
     args = get_args()
     tempo = args.tempo
-    curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
-    curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.curs_set(0)
     stdscr.clear()
     test(stdscr, tempo)
