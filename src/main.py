@@ -6,6 +6,7 @@ import time
 import argparse
 from src.colors import init_colors
 from src import utilities
+from src.settings_menu import settings
 
 def get_args():
     parser = argparse.ArgumentParser(description="Terminal Type Tester.")
@@ -14,6 +15,10 @@ def get_args():
                         type=int, 
                         help="Test duration")
     return parser.parse_args()
+
+args = get_args()
+if args.tempo is not None:
+    utilities.edit_setting_value("time", args.tempo)
 
 def get_size_of_terminal():
     screen = curses.initscr()
@@ -34,9 +39,8 @@ def get_ten_words_from_text(text, tens):
     listToStr = ' '.join([str(element) for element in text[10*(tens-1):10*tens]]) 
     return listToStr
 
-def footer(stdscr, max_y):
-    target = 'Esc - Exit'
-    stdscr.addstr(max_y-1, 0, target)
+def footer(stdscr, max_y, text):
+    stdscr.addstr(max_y-1, 0, text)
 
 def display(stdscr, target, line, max_y, max_x):
     middle_row = int(max_y / 2)
@@ -74,7 +78,7 @@ def statistic_window(stdscr, wpm, max_y, max_x):
     x_position = int((max_x / 2))
     stdscr.addstr(middle_row-4, x_position-int(7/2), f"WPM {str(wpm)}")
     stdscr.addstr(middle_row-2, x_position-int(23/2), "PRESS ENTER TO CONTINUE")
-    footer(stdscr, max_y)
+    footer(stdscr, max_y, 'Esc - Exit   TAB - Settings')
     stdscr.nodelay(False)
     while True:
         key = stdscr.getkey()
@@ -82,7 +86,13 @@ def statistic_window(stdscr, wpm, max_y, max_x):
             start(stdscr)
         elif key in ("\x1b"):
             break
-        
+        elif key in ("\x09"):
+            settings(stdscr)
+            stdscr.clear()
+            stdscr.addstr(middle_row-4, x_position-int(7/2), f"WPM {str(wpm)}")
+            stdscr.addstr(middle_row-2, x_position-int(23/2), "PRESS ENTER TO CONTINUE")
+            footer(stdscr, max_y, 'Esc - Exit   TAB - Settings')
+            
 def test(stdscr, tempo):
     test_text = get_text(1000)
     test_text_string = ' '.join([str(element) for element in test_text])  
@@ -105,7 +115,7 @@ def test(stdscr, tempo):
             n += 1
             display_test(stdscr, get_ten_words_from_text(test_text, 1+n), current_text, max_y, max_x)
         
-        footer(stdscr, max_y)
+        footer(stdscr, max_y, "ESC - Exit")
         display(stdscr, get_ten_words_from_text(test_text, 2+n), 0, max_y, max_x)
         display(stdscr, get_ten_words_from_text(test_text, 3+n), 1, max_y, max_x)
         countdown_timer(stdscr, time_elapsed, max_y, max_x)
@@ -129,9 +139,6 @@ def test(stdscr, tempo):
 
 def start(stdscr):
     init_colors()
-    args = get_args()
-    if args.tempo is not None:
-        utilities.edit_setting_value("time", args.tempo)
     curses.curs_set(0)
     stdscr.clear()
     test(stdscr, utilities.get_setting_value("time"))
