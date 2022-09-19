@@ -5,11 +5,11 @@ import json
 import time
 import argparse
 from src.colors import init_colors
+from src import utilities
 
 def get_args():
     parser = argparse.ArgumentParser(description="Terminal Type Tester.")
-    parser.add_argument("-t", 
-                        default=15, 
+    parser.add_argument("-t",  
                         dest="tempo", 
                         type=int, 
                         help="Test duration")
@@ -130,10 +130,11 @@ def test(stdscr, tempo):
 def start(stdscr):
     init_colors()
     args = get_args()
-    tempo = args.tempo
+    if args.tempo is not None:
+        utilities.edit_setting_value("time", args.tempo)
     curses.curs_set(0)
     stdscr.clear()
-    test(stdscr, tempo)
+    test(stdscr, utilities.get_setting_value("time"))
 
 def main():
     wrapper(start)
